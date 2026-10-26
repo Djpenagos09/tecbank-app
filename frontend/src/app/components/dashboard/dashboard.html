@@ -1,0 +1,210 @@
+<div class="dashboard-container" style="background-color: #f4f6f9; min-height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+  
+  <!-- Encabezado de la Plataforma TecBank -->
+  <header style="background: linear-gradient(135deg, #0d3b66 0%, #002347 100%); color: #ffffff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="background-color: #f4d35e; color: #0d3b66; font-weight: bold; width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px;">T</div>
+      <h1 style="margin: 0; font-size: 22px; font-weight: 700; tracking-wide: 1px;">TecBank <span style="color: #f4d35e;">S.A.</span></h1>
+    </div>
+    <div style="display: flex; align-items: center; gap: 20px;">
+      <span style="font-size: 14px; opacity: 0.9;">Simulador Bancario Oficial</span>
+      <button (click)="logout()" style="background-color: transparent; border: 1px solid #f4d35e; color: #f4d35e; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s;">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <main style="max-width: 1200px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+    
+    <!-- TARJETA DE RESUMEN DE CUENTA Y SALDO -->
+    <div style="grid-column: 1 / -1; background: #ffffff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 6px solid #f4d35e; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h2 style="margin: 0 0 6px 0; color: #0d3b66; font-size: 20px;">Hola, {{ user?.fullName || 'Cargando...' }}</h2>
+        <p style="margin: 0; color: #6c757d; font-size: 14px;">
+          Número de Cuenta de Ahorros: <strong style="color: #0d3b66; font-size: 18px; letter-spacing: 1px; background: #eef4f8; padding: 2px 8px; border-radius: 4px;">{{ user?.accountNumber || '-----' }}</strong>
+        </p>
+      </div>
+      <div style="text-align: right;">
+        <span style="display: block; font-size: 13px; color: #6c757d; text-transform: uppercase; font-weight: 600;">Saldo Disponible</span>
+        <span style="font-size: 32px; font-weight: 800; color: #0d3b66;">${{ user?.balance | number:'1.0-0' }} COP</span>
+      </div>
+    </div>
+
+    <!-- MÓDULO SIMULADOR DE TRANSFERENCIAS -->
+    <div style="background: #ffffff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+      <h3 style="margin-top: 0; color: #0d3b66; border-bottom: 2px solid #eef4f8; padding-bottom: 10px; font-size: 18px;">
+        💸 Transferir Dinero
+      </h3>
+
+      <!-- 1. Buscar Número de Cuenta -->
+      <div style="margin-bottom: 18px;">
+        <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #333; font-size: 14px;">
+          Número de Cuenta de Destino (5 dígitos)
+        </label>
+        <div style="display: flex; gap: 10px;">
+          <input 
+            type="text" 
+            [(ngModel)]="targetAccount" 
+            (keypress)="onlyNumbers($event)" 
+            maxlength="5" 
+            placeholder="Ej. 58201" 
+            style="flex: 1; padding: 10px 14px; border: 1px solid #ced4da; border-radius: 6px; font-size: 16px; letter-spacing: 1px;"
+          >
+          <button 
+            (click)="searchRecipient()" 
+            [disabled]="isSearching" 
+            style="background-color: #0d3b66; color: #ffffff; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; cursor: pointer;"
+          >
+            {{ isSearching ? 'Buscando...' : 'Validar' }}
+          </button>
+        </div>
+        <div *ngIf="searchError" style="color: #d9534f; font-size: 13px; margin-top: 6px; font-weight: 500;">
+          {{ searchError }}
+        </div>
+      </div>
+
+      <!-- Destinatario Confirmado -->
+      <div *ngIf="foundRecipient" style="background-color: #eef7ee; border: 1px solid #c3e6cb; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px;">
+        <span style="display: block; font-size: 12px; color: #28a745; font-weight: bold; text-transform: uppercase;">Cuenta Verificada</span>
+        <strong style="color: #155724; font-size: 16px;">{{ foundRecipient.fullName }}</strong>
+        <span style="display: block; font-size: 13px; color: #155724;">Cuenta N°: <strong>{{ foundRecipient.accountNumber }}</strong></span>
+      </div>
+
+      <!-- 2. Formulario de Monto y Concepto -->
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #333; font-size: 14px;">
+          Valor a Transferir (COP)
+        </label>
+        <input 
+          type="number" 
+          [(ngModel)]="transferAmount" 
+          placeholder="Ej. 150000" 
+          style="width: 100%; padding: 10px 14px; border: 1px solid #ced4da; border-radius: 6px; font-size: 16px; box-sizing: border-box;"
+        >
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #333; font-size: 14px;">
+          Concepto / Descripción (Opcional)
+        </label>
+        <input 
+          type="text" 
+          [(ngModel)]="transferConcept" 
+          placeholder="Ej. Pago de cena" 
+          style="width: 100%; padding: 10px 14px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px; box-sizing: border-box;"
+        >
+      </div>
+
+      <div *ngIf="transferError" style="color: #d9534f; font-size: 13px; margin-bottom: 15px; font-weight: 600;">
+        {{ transferError }}
+      </div>
+
+      <button 
+        (click)="openConfirmation()" 
+        style="width: 100%; background-color: #0d3b66; color: #ffffff; border: none; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s;"
+      >
+        Continuar Transferencia
+      </button>
+    </div>
+
+    <!-- HISTORIAL DE MOVIMIENTOS -->
+    <div style="background: #ffffff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+      <h3 style="margin-top: 0; color: #0d3b66; border-bottom: 2px solid #eef4f8; padding-bottom: 10px; font-size: 18px;">
+        📊 Historial de Movimientos
+      </h3>
+
+      <div *ngIf="transfersHistory.length === 0" style="text-align: center; color: #6c757d; padding: 30px 0;">
+        Aún no registras transferencias en esta cuenta.
+      </div>
+
+      <div style="max-height: 380px; overflow-y: auto;">
+        <div 
+          *ngFor="let tx of transfersHistory" 
+          (click)="viewTxDetail(tx)"
+          style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer;"
+        >
+          <div>
+            <strong style="display: block; font-size: 14px; color: #333;">
+              {{ tx.type === 'debit' ? 'Transferencia enviada a ' + tx.counterpartName : 'Transferencia recibida de ' + tx.counterpartName }}
+            </strong>
+            <span style="font-size: 12px; color: #888;">Cuenta: {{ tx.counterpartAccount }} • {{ tx.date }}</span>
+          </div>
+          <div style="text-align: right;">
+            <span [style.color]="tx.type === 'debit' ? '#d9534f' : '#28a745'" style="font-weight: bold; font-size: 15px;">
+              {{ tx.type === 'debit' ? '-' : '+' }}${{ tx.amount | number:'1.0-0' }}
+            </span>
+            <span style="display: block; font-size: 11px; color: #0d3b66; text-decoration: underline;">Ver detalle</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL 1: RESUMEN Y CONFIRMACIÓN DE TRANSFERENCIA -->
+  <div *ngIf="showConfirmModal" style="position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+    <div style="background: #ffffff; border-radius: 12px; width: 90%; max-width: 450px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+      <h3 style="margin-top:0; color: #0d3b66; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px;">Confirmar Transferencia</h3>
+      
+      <div style="margin: 20px 0; font-size: 14px; line-height: 1.8; color: #333;">
+        <div><strong>Destinatario:</strong> {{ foundRecipient?.fullName }}</div>
+        <div><strong>Cuenta de Destino:</strong> N° {{ foundRecipient?.accountNumber }}</div>
+        <div><strong>Monto a Transferir:</strong> <span style="font-size: 18px; color: #0d3b66; font-weight: bold;">${{ transferAmount | number:'1.0-0' }} COP</span></div>
+        <div><strong>Saldo Disponible Actual:</strong> ${{ user?.balance | number:'1.0-0' }} COP</div>
+        <div><strong>Concepto:</strong> {{ transferConcept || 'Sin descripción' }}</div>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button (click)="cancelTransfer()" style="flex: 1; padding: 10px; border: 1px solid #ccc; background: #fff; border-radius: 6px; cursor: pointer; font-weight: 600;">Cancelar</button>
+        <button (click)="confirmAndSend()" [disabled]="isSubmitting" style="flex: 1; padding: 10px; border: none; background: #0d3b66; color: #fff; border-radius: 6px; cursor: pointer; font-weight: bold;">
+          {{ isSubmitting ? 'Procesando...' : 'Confirmar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: COMPROBANTE SIMULADO DE TRANSFERENCIA -->
+  <div *ngIf="receiptModalData" style="position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+    <div style="background: #ffffff; border-radius: 12px; width: 90%; max-width: 480px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 8px solid #28a745;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div style="background: #d4edda; color: #28a745; width: 50px; height: 50px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 26px; font-weight: bold; margin-bottom: 10px;">✓</div>
+        <h3 style="margin: 0; color: #155724; font-size: 20px;">¡Transferencia realizada exitosamente!</h3>
+        <span style="font-size: 12px; color: #6c757d;">Comprobante de Operación Simulado TecBank</span>
+      </div>
+
+      <div style="background: #f8f9fa; border: 1px dashed #ced4da; border-radius: 8px; padding: 15px; font-size: 13px; line-height: 1.8; color: #333; margin-bottom: 20px;">
+        <div><strong>N° Referencia:</strong> {{ receiptModalData.reference }}</div>
+        <div><strong>Fecha y Hora:</strong> {{ receiptModalData.date }} {{ receiptModalData.time }}</div>
+        <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 8px 0;">
+        <div><strong>Origen:</strong> {{ receiptModalData.senderName }} (Cta: {{ receiptModalData.senderAccount }})</div>
+        <div><strong>Destino:</strong> {{ receiptModalData.receiverName }} (Cta: {{ receiptModalData.receiverAccount }})</div>
+        <div><strong>Monto Transferido:</strong> <strong style="font-size: 16px; color: #0d3b66;">${{ receiptModalData.amount | number:'1.0-0' }} COP</strong></div>
+        <div><strong>Concepto:</strong> {{ receiptModalData.concept }}</div>
+      </div>
+
+      <button (click)="closeReceipt()" style="width: 100%; background: #0d3b66; color: #fff; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+        Aceptar y Cerrar
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL 3: DETALLE DE TRANSACCIÓN EN EL HISTORIAL -->
+  <div *ngIf="selectedTxDetail" style="position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+    <div style="background: #ffffff; border-radius: 12px; width: 90%; max-width: 420px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+      <h3 style="margin-top:0; color: #0d3b66; border-bottom: 1px solid #eee; padding-bottom: 10px;">Detalle del Comprobante</h3>
+
+      <div style="font-size: 14px; line-height: 1.8; color: #333; margin: 15px 0;">
+        <div><strong>Referencia:</strong> {{ selectedTxDetail.reference }}</div>
+        <div><strong>Fecha:</strong> {{ selectedTxDetail.date }}</div>
+        <div><strong>Tipo:</strong> {{ selectedTxDetail.type === 'debit' ? 'Débito (Enviado)' : 'Crédito (Recibido)' }}</div>
+        <div><strong>De:</strong> {{ selectedTxDetail.senderName }} (Cta: {{ selectedTxDetail.senderAccount }})</div>
+        <div><strong>Para:</strong> {{ selectedTxDetail.receiverName }} (Cta: {{ selectedTxDetail.receiverAccount }})</div>
+        <div><strong>Monto:</strong> <span style="font-weight: bold; font-size: 16px;">${{ selectedTxDetail.amount | number:'1.0-0' }} COP</span></div>
+        <div><strong>Concepto:</strong> {{ selectedTxDetail.concept }}</div>
+        <div><strong>Estado:</strong> <span style="color: #28a745; font-weight: bold;">{{ selectedTxDetail.status }}</span></div>
+      </div>
+
+      <button (click)="closeTxDetail()" style="width: 100%; background: #0d3b66; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+        Cerrar
+      </button>
+    </div>
+  </div>
+
+</div>

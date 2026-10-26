@@ -1,0 +1,123 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--bg-gray);
+  padding: 20px;
+}
+
+.register-card {
+  background-color: var(--clean-white);
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(6, 26, 51, 0.12);
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+}
+
+.brand-header {
+  margin-bottom: 20px;
+}
+
+.logo-symbol {
+  width: 50px;
+  height: 50px;
+  background-color: var(--primary-blue);
+  color: var(--clean-white);
+  font-size: 28px;
+  font-weight: bold;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px auto;
+  border-bottom: 4px solid var(--accent-gold);
+}
+
+.brand-header h1 {
+  color: var(--primary-blue);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.brand-header h1 span {
+  font-size: 16px;
+  color: var(--dark-blue);
+}
+
+.tagline {
+  color: var(--accent-gold);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  margin-top: 4px;
+}
+
+h2 {
+  color: var(--dark-blue);
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: left;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dark-blue);
+}
+
+.form-group input {
+  padding: 11px;
+  border: 1px solid #CBD5E1;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 2px rgba(11, 61, 145, 0.2);
+}
+
+.btn-primary {
+  background-color: var(--primary-blue);
+  color: var(--clean-white);
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-primary:hover {
+  background-color: var(--dark-blue);
+}
+
+.card-footer {
+  margin-top: 20px;
+  font-size: 13px;
+  color: #64748B;
+}
+
+.card-footer a {
+  color: var(--primary-blue);
+  text-decoration: none;
+  font-weight: 600;
+}

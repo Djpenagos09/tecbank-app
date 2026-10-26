@@ -1,0 +1,146 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--bg-gray, #f4f6f9);
+  padding: 20px;
+}
+
+.login-card {
+  background: #FFFFFF;
+  padding: 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 24px rgba(6, 26, 51, 0.08);
+}
+
+.brand-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.logo-symbol {
+  width: 44px;
+  height: 44px;
+  background-color: #0B3D91;
+  color: #FFFFFF;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  border-bottom: 3px solid #D4AF37;
+}
+
+.brand-header h1 {
+  font-size: 22px;
+  color: #061A33;
+  margin: 0;
+}
+
+.brand-header h1 span {
+  font-size: 14px;
+  color: #D4AF37;
+}
+
+.tagline {
+  font-size: 11px;
+  color: #64748B;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.login-card h2 {
+  font-size: 20px;
+  color: #061A33;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #061A33;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #CBD5E1;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper input {
+  padding-right: 65px;
+}
+
+.btn-toggle-pass {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: #0B3D91;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.forgot-password {
+  font-size: 12px;
+  color: #0B3D91;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.btn-primary {
+  width: 100%;
+  background-color: #0B3D91;
+  color: #FFFFFF;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #061A33;
+}
+
+.card-footer {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: #64748B;
+}
+
+.card-footer a {
+  color: #0B3D91;
+  text-decoration: none;
+  font-weight: 600;
+}
